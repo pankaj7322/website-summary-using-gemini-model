@@ -2,6 +2,11 @@ import os
 import google
 import google.generativeai as genai
 import streamlit as st
+import spacy
+from spacy import displacy
+import requests
+import pandas as pd
+from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from urllib.parse import urlparse
@@ -41,18 +46,58 @@ def extract_website_data(url):
     return visible_text
 
 # Function to display summary and keywords
-def printing_summary(response_new):
+
+def printing_summary(response_new, url):
     output_placeholder = st.empty()
     output_placeholder.empty()
+    print(response_new)
     summary_text, keywords_text = response_new.split("Keywords")
     keywords_list = re.findall(r'\* (.+)', keywords_text)
     text = ",  ".join(keywords_list)
-    st.write(text)
+
+    #### nlp tokenizer ########
+
+    nlp = spacy.load("en_core_web_sm")
+    pd.set_option("display.max_rows", 200)
+    doc = nlp(text)
+
+    new_text = displacy.render(doc, style="ent")
+
+    ########## end  ###################
+    
+    ###### Define CSS styles for each subheader to change their colors
+    subheader_style1 = """
+        <style>
+            .colorful-subheader1 {
+                color: blue;
+            }
+        </style>
+    """
+
+    subheader_style2 = """
+        <style>
+            .colorful-subheader2 {
+                color: red;
+            }
+        </style>
+    """
+    ############################################
+    st.write(url)
+
+    st.markdown(subheader_style1, unsafe_allow_html=True)
+    st.markdown("<h2 class='colorful-subheader1'>Keywords</h2>", unsafe_allow_html=True)
+
+    st.write(new_text, unsafe_allow_html=True)
+    st.write("")
+    st.markdown(subheader_style2, unsafe_allow_html=True)
+
+    st.markdown("<h2 class='colorful-subheader2'>Summary</h2>", unsafe_allow_html=True)
     st.write(summary_text.strip())
+
 
 # Function to generate content using generative AI model
 def generativeai_model(prompt, visible_text):
-    api_key = "AIzaSyDfzdWQ9YonIv-5qkBXVO0jhS7bCMjd8xo"
+    api_key = "AIzaSyDmf1l9sIE1mGct61wGZc83SHTrC0bSoCU"
     genai.configure(api_key = api_key)
     model = genai.GenerativeModel('gemini-pro')
     response = model.generate_content([prompt, visible_text])
@@ -77,7 +122,7 @@ def main():
         selection_box(url)
         visible_text = extract_website_data(url)
         response_new = generativeai_model(prompt_text, visible_text)
-        printing_summary(response_new)
+        printing_summary(response_new, url)
 
     # Display selection box for saved websites
     keys = st.session_state.url_title_keys
@@ -87,9 +132,9 @@ def main():
             url = st.session_state.url_title_dict[options]
             visible_text = extract_website_data(url)
             response_new = generativeai_model(prompt_text, visible_text)
-            printing_summary(response_new)
+            printing_summary(response_new, url)
     except Exception as e:
-        st.write("Enter the link")
+        st.write("Enter the link ")
 
 if __name__ == '__main__':
     main()
