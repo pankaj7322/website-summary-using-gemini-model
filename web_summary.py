@@ -97,7 +97,7 @@ def printing_summary(response_new, url):
 
 # Function to generate content using generative AI model
 def generativeai_model(prompt, visible_text):
-    api_key = "AIzaSyDmf1l9sIE1mGct61wGZc83SHTrC0bSoCU"
+    api_key = "AIzaSyCi07Vk70ODiBJmXtGnQ1LqJXD1POFahU8"
     genai.configure(api_key = api_key)
     model = genai.GenerativeModel('gemini-pro')
     response = model.generate_content([prompt, visible_text])
