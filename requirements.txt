@@ -1,2 +1,7 @@
 google-generativeai
 streamlit
+spacy
+requests
+pandas
+beautifulsoup4
+selenium
