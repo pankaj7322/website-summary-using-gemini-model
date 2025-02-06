@@ -12,7 +12,7 @@ from selenium.webdriver.common.by import By
 from urllib.parse import urlparse
 from selenium.webdriver.chrome.options import Options
 import re
-import time
+import time 
 
 # Function to add URL to session state dictionary
 def selection_box(url):
@@ -97,7 +97,7 @@ def printing_summary(response_new, url):
 
 # Function to generate content using generative AI model
 def generativeai_model(prompt, visible_text):
-    api_key = "AIzaSyCi07Vk70ODiBJmXtGnQ1LqJXD1POFahU8"
+    api_key = "AIzaSyCaMV2wfcHI6T6QOoBGMeHy39UJGuQKVuo"
     genai.configure(api_key = api_key)
     model = genai.GenerativeModel('gemini-pro')
     response = model.generate_content([prompt, visible_text])
